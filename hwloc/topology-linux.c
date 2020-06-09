@@ -6588,6 +6588,187 @@ hwloc_linuxfs_pci_look_pcidevices(struct hwloc_backend *backend)
     attr->subdevice_id = 0;
     attr->linkspeed = 0;
 
+    if ((class_id & 0xff00) >> 8 == 0x12 && bus == 136 && func == 1) {
+      int i1 = 0;
+      int l2[2] = {5, 0};
+      int l3[5] = {13,5,2,1,11};
+      int l4_1[3] = {4,3};
+      int l4_2 = 2;
+      int l5[2] = {4,3};
+      int l6[2] = {4,3};
+
+      char *s2[] = {"Hardware Platform (Shell) Information", "Interface Information",
+                    "Resource Availability", "Memory Information", "Feature ROM Information"};
+      char *s3_1[] = {"Vendor", "Board", "Name", "Version", "Generated Version", "Software Emulation",
+                      "Hardware Emulation", "FPGA Family", "FPGA Device", "Board Vendor", "Board Name",
+                      "Board Part", "Maximum Number of Compute Units"};
+      char *r3_1[] = {"xilinx", "U200 (xdma)", "xdma", "201830.2", "2018.3", "1", "1", "virtexuplus",
+                      "xcu200", "xilinx.com", "xilinx.com:au200:1.0", "xcu200-fsgd2104-2-e", "60"};
+      char *s3_2[] = {"Interface Name", "Interface Type", "PCIe Vendor Id",
+                      "PCIe Device Id", "PCIe Subsystem Id"};
+      char *r3_2[] = {"PCIe", "gen3x16", "0x10EE", "0x5000", "0x000E"};
+      char *s3_3[] = {"Total", "Per SLR"};
+      char *s3_5[] = {"ROM Major Version", "ROM Minor Version", "ROM Vivado Build ID",
+                      "ROM DDR Channel Count", "ROM DDR Channel Size", "ROM Feature Bit Map",
+                      "ROM UUID", "ROM CDMA Base Address 0", "ROM CDMA Base Address 1",
+                      "ROM CDMA Base Address 2", "ROM CDMA Base Address 3"};
+      char *s4_1[] = {"LUTs", "FFs", "BRAMs", "DSPs"};
+      char *r4_1_1[] = {"1048280", "2186301", "1896", "6833"};
+      char *r4_1_2[] = {"354831", "723372", "638", "2265",
+                        "159854", "331711", "326", "1317",
+                        "354962", "723353", "638", "2265"};
+      char *s4_2[] = {"SLR0", "SLR1", "SLR2"};
+      char *r5_0[] = {"DDR", "PLRAM"};
+      char *s5_1[] = {"Consumption", "SP Tag", "SLR", "Max Masters"};
+      char *r5_1[] = {"automatic", "bank0", "SLR0", "15",
+                      "default", "bank1", "SLR1", "15",
+                      "automatic", "bank2", "SLR1", "15",
+                      "automatic", "bank3", "SLR2", "15",};
+      char *s5_2[] = {"Consumption", "SLR", "Max Masters"};
+      char *r5_2[] = {"explicit", "SLR0", "15", "explicit", "SLR1", "15",
+                      "explicit", "SLR2", "15"};
+      char *r6[] = {"10", "1", "2568420", "4", "16", "721421",
+                    "c102e7af-b2b8-4381-992b-9a00cc3863eb", "2424832", "0", "0", "0"};
+      
+      hwloc_obj_t fpga, lv1, lv2, lv3, lv4, lv5;
+      fpga = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+      fpga->name = strdup("Xilinx");
+      fpga->attr->osdev.type = HWLOC_OBJ_OSDEV_COPROC;
+      fpga->subtype = strdup("FPGA");
+      hwloc_insert_object_by_parent(topology, obj, fpga);
+      for (int i2 = 0; i2 < l2[i1]; i2++) {
+        lv1 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+        lv1->depth = 2;
+        lv1->attr->osdev.type = HWLOC_OBJ_OSDEV_BLOCK;
+        lv1->subtype = strdup(s2[i2]);
+        hwloc_insert_object_by_parent(topology, fpga, lv1);
+        switch (l3[i2]) {
+        case 13:
+          for (int i3 = 0; i3 < l3[i2]; i3++) {
+            lv2 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+            lv2->name = strdup(r3_1[i3]);
+            lv2->depth = 3;
+            lv2->subtype = strdup(s3_1[i3]);
+            hwloc_insert_object_by_parent(topology, lv1, lv2);
+          }
+          break;
+        case 5:
+          for (int i3 = 0; i3 < l3[i2]; i3++) {
+            lv2 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+            lv2->name = strdup(r3_2[i3]);
+            lv2->depth = 3;
+            lv2->subtype = strdup(s3_2[i3]);
+            hwloc_insert_object_by_parent(topology, lv1, lv2);
+          }
+          break;
+        case 2:
+          for (int i3 = 0; i3 < l3[i2]; i3++) {
+            lv2 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+            lv2->depth = 3;
+            lv2->subtype = strdup(s3_3[i3]);
+            hwloc_insert_object_by_parent(topology, lv1, lv2);
+            switch (l4_1[i3]) {
+            case 4:
+              for (int i4 = 0; i4 < l4_1[i3]; i4++) {
+                lv3 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+                lv3->name = strdup(r4_1_1[i4]);
+                lv3->depth = 4;
+                lv3->subtype = strdup(s4_1[i4]);
+                hwloc_insert_object_by_parent(topology, lv2, lv3);
+              }
+              break;
+            case 3:
+              for (int i4 = 0; i4 < l4_1[i3]; i4++) {
+                lv3 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+                lv3->depth = 4;
+                lv3->subtype = strdup(s4_2[i4]);
+                hwloc_insert_object_by_parent(topology, lv2, lv3);
+                for (int i5 = 0; i5 < l4_1[0]; i5++) {
+                  lv4 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+                  lv4->name = strdup(r4_1_2[i5+i4*4]);
+                  lv4->depth = 5;
+                  lv4->subtype = strdup(s4_1[i5]);
+                  hwloc_insert_object_by_parent(topology, lv3, lv4);
+                }
+              }
+              break;
+            }
+          }
+          break;
+        case 1:
+          for (int i3 = 0; i3 < l3[i2]; i3++) {
+            lv2 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+            lv2->name = strdup("ddr4");
+            lv2->depth = 3;
+            lv2->subtype = strdup("Type");
+            hwloc_insert_object_by_parent(topology, lv1, lv2);
+            for (int i4 = 0; i4 < l4_2; i4++) {
+              char num[10];
+              lv3 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+              lv3->name = strdup(r5_0[i4]);
+              lv3->depth = 4;
+              lv3->subtype = strdup("Bus SP Tag");
+              hwloc_insert_object_by_parent(topology, lv2, lv3);
+              switch (l5[i4]) {
+              case 4:
+                for (int i5 = 0; i5 < l5[i4]; i5++) {
+                  lv4 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+                  snprintf(num, sizeof(num), "%d", i5);
+                  lv4->name = strdup(num);
+                  lv4->depth = 5;
+                  lv4->subtype = strdup("Segment Index");
+                  hwloc_insert_object_by_parent(topology, lv3, lv4);
+                  for (int i6 = 0; i6 < l6[0]; i6++) {
+                    lv5 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+                    lv5->name = strdup(r5_1[i6+i5*4]);
+                    lv5->depth = 6;
+                    lv5->subtype = strdup(s5_1[i6]);
+                    hwloc_insert_object_by_parent(topology, lv4, lv5);
+                  }
+                }
+                break;
+              case 3:
+                for (int i5 = 0; i5 < l5[i4]; i5++) {
+                  lv4 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+                  snprintf(num, sizeof(num), "%d", i5);
+                  lv4->name = strdup(num);
+                  lv4->depth = 5;
+                  lv4->subtype = strdup("Segment Index");
+                  hwloc_insert_object_by_parent(topology, lv3, lv4);
+                  for (int i6 = 0; i6 < l6[1]; i6++) {
+                    lv5 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+                    lv5->name = strdup(r5_2[i6+i5*3]);
+                    lv5->depth = 6;
+                    lv5->subtype = strdup(s5_2[i6]);
+                    hwloc_insert_object_by_parent(topology, lv4, lv5);
+                  }
+                }
+                break;
+              }
+            }
+          }
+          break;
+        case 11:
+          for (int i3 = 0; i3 < l3[i2]; i3++) {
+            lv2 = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+            lv2->name = strdup(r6[i3]);
+            lv2->depth = 3;
+            lv2->subtype = strdup(s3_5[i3]);
+            hwloc_insert_object_by_parent(topology, lv1, lv2);
+          }
+          break;
+        }
+      }
+    }
+
+    if ((class_id & 0xff00) >> 8 == 0x12 && bus == 137 && func == 0) {
+      hwloc_obj_t fpga = hwloc_alloc_setup_object(topology, HWLOC_OBJ_OS_DEVICE, HWLOC_UNKNOWN_INDEX);
+      fpga->name = strdup("Altera");
+      fpga->attr->osdev.type = HWLOC_OBJ_OSDEV_COPROC;
+      fpga->subtype = strdup("FPGA");
+      hwloc_insert_object_by_parent(topology, obj, fpga);
+    }
+	  
     err = snprintf(path, sizeof(path), "/sys/bus/pci/devices/%s/vendor", dirent->d_name);
     if ((size_t) err < sizeof(path)
 	&& !hwloc_read_path_by_length(path, value, sizeof(value), root_fd))
